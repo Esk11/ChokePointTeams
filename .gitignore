@@ -1,0 +1,25 @@
+# ChokePoint - files Git should not store
+
+# Build results (the installer and build folders go on GitHub Releases, not in the repository)
+/Builds/
+bin/
+obj/
+publish/
+
+# Visual Studio / VS Code / .NET local files
+.vs/
+.vscode/
+*.user
+*.suo
+*.pdb
+*.nupkg
+TestResults/
+
+# WinDivert binaries: downloaded separately (see the README) and not stored here.
+# Delete these two lines if you would rather commit them.
+WinDivert.dll
+WinDivert64.sys
+
+# Windows
+Thumbs.db
+desktop.ini

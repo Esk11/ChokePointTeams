@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "W5OCbEqrbiU=",
+  "dgSpecHash": "gIu16QG0++8=",
   "success": true,
   "projectFilePath": "D:\\GitHub\\ChokePointTeams\\ChokePointTeams\\ChokePointTeams.csproj",
   "expectedPackageFiles": [
@@ -13,10 +13,7 @@
     "C:\\Users\\jwret\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
     "C:\\Users\\jwret\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "C:\\Users\\jwret\\.nuget\\packages\\microsoft.web.webview2\\1.0.4258.31\\microsoft.web.webview2.1.0.4258.31.nupkg.sha512",
-    "C:\\Users\\jwret\\.nuget\\packages\\system.reflection.typeextensions\\4.7.0\\system.reflection.typeextensions.4.7.0.nupkg.sha512",
-    "C:\\Users\\jwret\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\10.0.12\\microsoft.netcore.app.runtime.win-x64.10.0.12.nupkg.sha512",
-    "C:\\Users\\jwret\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\10.0.12\\microsoft.windowsdesktop.app.runtime.win-x64.10.0.12.nupkg.sha512",
-    "C:\\Users\\jwret\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\10.0.12\\microsoft.aspnetcore.app.runtime.win-x64.10.0.12.nupkg.sha512"
+    "C:\\Users\\jwret\\.nuget\\packages\\system.reflection.typeextensions\\4.7.0\\system.reflection.typeextensions.4.7.0.nupkg.sha512"
   ],
   "logs": []
 }
