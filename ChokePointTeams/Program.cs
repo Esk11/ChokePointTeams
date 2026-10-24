@@ -249,6 +249,12 @@ class MainForm : Form
 
         Load += async (_, _) =>
         {
+            web.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ChokePointTeams", "WebView2")
+            };
             try { await web.EnsureCoreWebView2Async(); }
             catch (WebView2RuntimeNotFoundException)
             {

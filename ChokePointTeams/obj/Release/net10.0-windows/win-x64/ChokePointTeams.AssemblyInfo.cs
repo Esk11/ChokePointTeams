@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChokePointTeams")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+250b8e15d5f1f5f1339cc4f6abe99050ee1dec1f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bbd53505378f99e8fe357f5b294eb495bcf68b77")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChokePoint for Teams")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChokePointTeams")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

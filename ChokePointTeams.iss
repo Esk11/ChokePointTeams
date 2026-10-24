@@ -35,4 +35,7 @@ Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 Name: "{group}\ChokePoint for Teams"; Filename: "{app}\ChokePointTeams.exe"
 Name: "{autodesktop}\ChokePoint for Teams"; Filename: "{app}\ChokePointTeams.exe"; Tasks: desktopicon
 
+[UninstallDelete]
+; Remove the WebView2 profile directory left by older versions using the default location.
+Type: filesandordirs; Name: "{app}\ChokePointTeams.exe.WebView2"
 
