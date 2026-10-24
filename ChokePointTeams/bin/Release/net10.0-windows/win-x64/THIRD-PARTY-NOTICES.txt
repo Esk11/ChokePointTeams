@@ -1,0 +1,67 @@
+CHOKEPOINT - THIRD-PARTY NOTICES
+=================================
+
+ChokePoint uses the third-party components listed below. Each component remains
+under its own license. Full license texts are in the "licenses" folder next to
+this file.
+
+
+1. WinDivert 2.2.2  (WinDivert.dll and WinDivert64.sys)
+   ----------------------------------------------------
+   A Windows packet capture library and driver. ChokePoint uses it to measure
+   and limit network traffic.
+
+   Copyright (C) 2019 the WinDivert authors.
+   License:  GNU Lesser General Public License, version 3 (LGPL v3).
+             (WinDivert is offered under LGPL v3 or GPL v2 at the user's choice;
+             ChokePoint uses it under LGPL v3.)
+   Website:  https://reqrypt.org/windivert.html
+   Source:   https://github.com/basil00/WinDivert
+             The complete source code of the version used here (2.2.2) is also
+             included with this program: licenses\WinDivert-2.2.2-Source.zip
+   License text: licenses\WinDivert-LICENSE.txt
+
+   WinDivert has not been modified. It is installed as separate files
+   (WinDivert.dll and WinDivert64.sys) in the application folder and is loaded
+   by ChokePoint as a separate library. You may replace these files with your
+   own build of WinDivert 2.2.x, and you may reverse engineer ChokePoint's use
+   of the library to the extent needed to debug such a replacement.
+
+
+2. Microsoft.Diagnostics.Tracing.TraceEvent
+   ----------------------------------------
+   A library for reading Windows event traces, used to measure per-app traffic.
+
+   License:  MIT License
+   Source:   https://github.com/microsoft/perfview
+   License text: licenses\TraceEvent-LICENSE.txt
+
+
+3. Microsoft Edge WebView2 (SDK and Runtime)
+   -----------------------------------------
+   Used to display the ChokePoint interface. The WebView2 SDK is part of the
+   program; the WebView2 Runtime is a Microsoft component that is installed
+   separately and is licensed to you by Microsoft under its own license terms.
+
+   Website:  https://developer.microsoft.com/microsoft-edge/webview2/
+   License text: licenses\WebView2-LICENSE.txt
+
+
+4. .NET and Windows Forms
+   ----------------------
+   The .NET runtime and Windows Forms libraries that run ChokePoint.
+
+   Copyright (c) .NET Foundation and Contributors.
+   License:  MIT License
+   Source:   https://github.com/dotnet/runtime
+             https://github.com/dotnet/winforms
+   License text: licenses\DotNet-LICENSE.txt
+
+
+5. Bangers font
+   ------------
+   The lettering used for the ChokePoint title.
+
+   License:  SIL Open Font License, Version 1.1
+   Source:   https://fonts.google.com/specimen/Bangers
+   License text: licenses\Bangers-OFL.txt
