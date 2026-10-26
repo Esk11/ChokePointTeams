@@ -16,7 +16,7 @@ AppPublisher=ChokePoint
 DefaultDirName={autopf}\ChokePoint for Teams
 DefaultGroupName=ChokePoint for Teams
 OutputDir=Builds
-OutputBaseFilename=ChokePointforTeams-Setup-{#Stamp}
+OutputBaseFilename=ChokePointforTeams-Installer-{#Stamp}
 SetupIconFile=ChokePointTeams\choke-point-glyph.ico
 UninstallDisplayIcon={app}\ChokePointTeams.exe
 Compression=lzma2
@@ -24,6 +24,8 @@ SolidCompression=yes
 PrivilegesRequired=admin
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
+WizardImageFile=ChokePointTeams\installer\wizard-large.bmp,ChokePointTeams\installer\wizard-large-150.bmp,ChokePointTeams\installer\wizard-large-200.bmp
+WizardSmallImageFile=ChokePointTeams\installer\wizard-small.bmp,ChokePointTeams\installer\wizard-small-200.bmp
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: unchecked

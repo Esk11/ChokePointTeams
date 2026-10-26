@@ -112,12 +112,14 @@ static class WindowFinder
     [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hwnd, int command);
     [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hwnd);
     [DllImport("user32.dll")] static extern bool IsIconic(IntPtr hwnd);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hwnd);
 
     public static void BringToFront(string title)
     {
         var h = FindWindow(null, title);
         if (h == IntPtr.Zero) return;
-        if (IsIconic(h)) ShowWindow(h, 9);     // 9 = restore
+        if (IsIconic(h)) ShowWindow(h, 9);                 // 9 = restore
+        else if (!IsWindowVisible(h)) ShowWindow(h, 5);    // 5 = show (it was hidden in the tray)
         SetForegroundWindow(h);
     }
 }
@@ -195,6 +197,19 @@ class MainForm : Form
     readonly NetMonitor monitor = new();
     readonly Limiter limiter;
     readonly NotifyIcon tray = new() { Text = "ChokePoint for Teams" };
+
+    // Tray menu. Keep these names in step with the L array in ui\index.html.
+    static readonly string[] LevelNames =
+    {
+        "No Effect", "Minor Turbulence", "Moderate Disturbance",
+        "Significant Disruption", "Major Disruption", "Appear Offline"
+    };
+    readonly ToolStripMenuItem openItem = new("Open");
+    readonly ToolStripMenuItem[] levelItems = new ToolStripMenuItem[LevelNames.Length];
+    ContextMenuStrip? trayMenu;
+    Font? boldFont;
+    int currentLevel;                                  // the level in use, whoever set it (page or tray menu)
+    bool exiting;                                      // true only when we really want to quit (the X button just hides)
     static readonly JsonSerializerOptions Json = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -231,16 +246,10 @@ class MainForm : Form
         }
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         tray.Icon = Icon;
-        var menu = new ContextMenuStrip();
-        menu.Items.Add("Open", null, (_, _) => RestoreFromTray());
-        menu.Items.Add("Back to normal", null, (_, _) =>
-        {
-            limiter.SetLevel(0);
-            web.CoreWebView2?.PostWebMessageAsJson("{\"setLevel\":0}");   // keeps the page's buttons in sync
-        });
-        menu.Items.Add("Exit", null, (_, _) => Close());
-        tray.ContextMenuStrip = menu;
+        BuildTrayMenu();
         tray.MouseClick += (_, e) => { if (e.Button == MouseButtons.Left) RestoreFromTray(); };
+        tray.Visible = true;
+        ShowInTaskbar = false;                        // the app lives in the system tray only
         Opacity = 0;                                  // hidden until the page is ready
 
         BackColor = Dark;
@@ -264,7 +273,7 @@ class MainForm : Form
                     "Click OK to open Microsoft's download page. Install the \"Evergreen\" version, then start ChokePoint again.",
                     "ChokePoint - missing component", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OpenLink("https://developer.microsoft.com/microsoft-edge/webview2/");
-                Close();
+                ExitApp();
                 return;
             }
             catch (Exception ex)
@@ -272,7 +281,7 @@ class MainForm : Form
                 splash.Close();
                 MessageBox.Show("ChokePoint could not start its display:\n\n" + ex.Message,
                     "ChokePoint", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
+                ExitApp();
                 return;
             }
 
@@ -299,7 +308,7 @@ class MainForm : Form
                             AppSettings.Save(doc.RootElement.GetProperty("settings").Clone());
                             break;
                         case "level":      // the disturbance buttons
-                            limiter.SetLevel(doc.RootElement.GetProperty("level").GetInt32());
+                            ApplyLevel(doc.RootElement.GetProperty("level").GetInt32(), false);
                             break;
                     }
                 }
@@ -374,10 +383,60 @@ class MainForm : Form
         });
     }
 
+    // ---- tray icon and its menu ----
+    void BuildTrayMenu()
+    {
+        var menu = trayMenu = new ContextMenuStrip();
+        openItem.Click += (_, _) => { if (Visible && WindowState != FormWindowState.Minimized) HideToTray(); else RestoreFromTray(); };
+        menu.Items.Add(openItem);
+        menu.Items.Add(new ToolStripSeparator());
+        for (int i = 0; i < LevelNames.Length; i++)
+        {
+            int level = i;                             // captured by the click handler
+            levelItems[i] = new ToolStripMenuItem(LevelNames[i]);
+            levelItems[i].Click += (_, _) => ApplyLevel(level, true);
+            menu.Items.Add(levelItems[i]);
+        }
+        menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add("Exit", null, (_, _) => ExitApp());
+        menu.Opening += (_, _) => openItem.Text = Visible && WindowState != FormWindowState.Minimized ? "Minimise to tray" : "Open";
+        tray.ContextMenuStrip = menu;
+        ShowLevelInTray();
+    }
+
+    // The one place a level is applied. tellPage = the change came from the tray menu, so the page must update its buttons.
+    void ApplyLevel(int level, bool tellPage)
+    {
+        currentLevel = Math.Clamp(level, 0, LevelNames.Length - 1);
+        limiter.SetLevel(currentLevel);
+        ShowLevelInTray();
+        if (tellPage) web.CoreWebView2?.PostWebMessageAsJson("{\"setLevel\":" + currentLevel + "}");
+    }
+
+    // Tick and bold the level in use, and show it in the icon's tooltip.
+    void ShowLevelInTray()
+    {
+        if (trayMenu is null) return;
+        boldFont ??= new Font(trayMenu.Font, FontStyle.Bold);
+        for (int i = 0; i < levelItems.Length; i++)
+        {
+            bool on = i == currentLevel;
+            levelItems[i].Checked = on;
+            levelItems[i].Font = on ? boldFont : trayMenu.Font;
+        }
+        tray.Text = "ChokePoint for Teams: " + LevelNames[currentLevel];     // tooltips are limited to 63 characters
+    }
+
+    void HideToTray() { SaveWindow(); Hide(); }
+
+    void ExitApp() { exiting = true; Close(); }
+
     void RestoreFromTray()
     {
         Show();
         WindowState = lastState;      // Normal or Maximized, whichever it was before
+        TopMost = true;               // jump above every other window...
+        TopMost = false;              // ...then go back to behaving normally
         Activate();
     }
 
@@ -406,11 +465,20 @@ class MainForm : Form
     {
         base.OnSizeChanged(e);
         TrackWindow();
-        if (WindowState == FormWindowState.Minimized) { tray.Visible = true; Hide(); }   // minimise = go to the tray
-        else if (tray.Visible) tray.Visible = false;
+        if (WindowState == FormWindowState.Minimized) Hide();   // minimise = go to the tray
     }
     protected override void OnResizeEnd(EventArgs e) { base.OnResizeEnd(e); SaveWindow(); }     // after dragging or resizing
-    protected override void OnFormClosing(FormClosingEventArgs e) { SaveWindow(); base.OnFormClosing(e); }
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        if (!exiting && e.CloseReason == CloseReason.UserClosing)    // the X button: hide to the tray instead of quitting
+        {
+            e.Cancel = true;
+            HideToTray();
+            return;
+        }
+        SaveWindow();
+        base.OnFormClosing(e);
+    }
 
     protected override void OnHandleCreated(EventArgs e)
     {
