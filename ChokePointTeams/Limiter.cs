@@ -30,8 +30,8 @@ static class ProfileSettings
     static readonly Profile[] Defaults =
     {
         new("No effect",   -1,   0,   0,  0,    0),
-        new("Minor",      300,   1,  80,  0,    0),
-        new("Moderate",    80,   6, 250,  0.5,  6),
+        new("Minor",      300,   4,  140,  0.1,    6),
+        new("Moderate",    80,   8, 250,  0.5,  6),
         new("Significant", 12,  20, 400,  1.5,  4),
         new("Major",        4,  50, 800, 12,    5),
         new("Offline",      0, 100,   0,  0,    0),
